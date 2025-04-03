@@ -4,7 +4,7 @@
 ### :hammer_and_wrench: Tech Stack
 * Java + Springboot
 * Apache PDFBox
-------
+
 ## MVP Solution
 1. Ingest a single Invoice or Bank Statement
 2. Read info and scrape text
@@ -26,7 +26,8 @@
 Simple workflow designed to mock a Lambda deployment. Although this code base was not originally designed for a lambda integration the controller should easily be swappable without affecting the remaining codebase
 #### :exclamation: Observed Issues
 This solution does not work for image based pdfs i.e. Macquarie Bank statements
-------
+
+
 ## :stethoscope: Day 2 Extension Ideas
 1. Store relevant key-words in a DB that can be updated overtime
 2. Store Analysis results a DB to be used for data optimization and reporting
