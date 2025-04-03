@@ -22,6 +22,8 @@ Heuristic approach to the PDF Document Classification API
     2. Invoices
         1. Minimal dates
 
+#### Basic CI/CD
+Simple workflow designed to mock a Lambda deployment. Although this code base was not originally designed for a lambda integration the controller should easily be swappable without affecting the remaining codebase
 #### Observed Issues
 This solution does not work for image based pdfs i.e. Macquarie Bank statements
 
