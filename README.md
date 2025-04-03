@@ -1,10 +1,10 @@
-# Analyse PDF
-Heuristic approach to the PDF Document Classification API
+<h1 align="center">Analyse PDF</h1>
+<p align="center">Heuristic approach to the PDF Document Classification API</p>
 
-### Tech Stack
+### :hammer_and_wrench: Tech Stack
 * Java + Springboot
 * Apache PDFBox
-
+------
 ## MVP Solution
 1. Ingest a single Invoice or Bank Statement
 2. Read info and scrape text
@@ -13,7 +13,7 @@ Heuristic approach to the PDF Document Classification API
 5. Calculate uses of different fonts
 6. Return basic analysis report in JSON format
 
-#### key word matching logic
+#### :magnet: key word matching logic
 1. Find key-words associated with a given document type
 2. If the same key word is found multiple times devalue its overall score
 3. Search for specific characteristics related to each document type
@@ -22,20 +22,20 @@ Heuristic approach to the PDF Document Classification API
     2. Invoices
         1. Minimal dates
 
-#### Basic CI/CD
+#### :rocket: Basic CI/CD
 Simple workflow designed to mock a Lambda deployment. Although this code base was not originally designed for a lambda integration the controller should easily be swappable without affecting the remaining codebase
-#### Observed Issues
+#### :exclamation: Observed Issues
 This solution does not work for image based pdfs i.e. Macquarie Bank statements
-
-## Day 2 Extension Ideas
+------
+## :stethoscope: Day 2 Extension Ideas
 1. Store relevant key-words in a DB that can be updated overtime
 2. Store Analysis results a DB to be used for data optimization and reporting
 3. Analyse font positions grouping sections of the page by font types
 4. Allow the ingestion of multiple PDF's and splitting the analysis with concurrent workers
 5. Link relevant Institute with common patterns in their PDF documents i.e. layouts, font ratios, key-words.
 
-
-### Setting up codebase
+------
+### :racing_car: Setting up codebase
 _Requires [Maven](https://maven.apache.org/install.html) and [Java 17](https://www.openlogic.com/openjdk-downloads)_
 
 Run the following command in your CLI
@@ -43,8 +43,8 @@ Run the following command in your CLI
 mvn spring-boot:run
 ```
 Or run inside your fav ide
-
-### Calling the API
+------
+### :cloud: Calling the API
 ##### API Endpoint
 ```
 POST http://localhost:8080/api/pdf/analyse
