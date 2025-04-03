@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ContentContentScoringServiceTests {
+public class ContentContentScoringServiceTest {
 
     private ContentContentScoringServiceImpl scoringService;
 
@@ -26,8 +26,8 @@ public class ContentContentScoringServiceTests {
         List<String> invoiceLines = Arrays.asList(
                 "INVOICE",
                 "Invoice Number: INV-12345",
-                "Invoice Date: 15/03/2023",
-                "Due Date: 15/04/2023",
+                "Invoice Date: 15/03/2025",
+                "Due Date: 15/04/2025",
                 "Bill To: John Doe",
                 "Payment Terms: Net 30",
                 "Item Description: Web Development Services",
@@ -55,25 +55,25 @@ public class ContentContentScoringServiceTests {
         List<String> statementLines = Arrays.asList(
                 "BANK STATEMENT",
                 "Account Statement",
-                "Statement Period: 01/01/2023 - 31/01/2023",
+                "Statement Period: 01/01/2025 - 31/01/2025",
                 "Account Number: 987654321",
                 "BSB: 789-012",
                 "Opening Balance: $5000.00",
                 "Closing Balance: $5500.00",
                 "Available Balance: $5500.00",
-                "Transaction Date: 05/01/2023",
+                "Transaction Date: 05/01/2025",
                 "Description: Salary Deposit",
                 "Credit: $2000.00",
-                "Transaction Date: 10/01/2023",
+                "Transaction Date: 10/01/2025",
                 "Description: Rent Payment",
                 "Debit: $1500.00",
-                "Transaction Date: 15/01/2023",
+                "Transaction Date: 15/01/2025",
                 "Description: Grocery Shopping",
                 "Withdrawal: $200.00",
-                "Transaction Date: 20/01/2023",
+                "Transaction Date: 20/01/2025",
                 "Description: Utility Bill",
                 "Debit: $150.00",
-                "Transaction Date: 25/01/2023",
+                "Transaction Date: 25/01/2025",
                 "Description: Interest",
                 "Credit: $50.00"
         );
@@ -119,8 +119,8 @@ public class ContentContentScoringServiceTests {
     void shouldIncrementScoreForDatesInInvoice() {
         List<String> invoiceWithDates = Arrays.asList(
                 "Invoice",
-                "Date: 01/02/2023",
-                "Due Date: 15/02/2023"
+                "Date: 01/02/2025",
+                "Due Date: 15/02/2025"
         );
 
         List<String> invoiceWithoutDates = Arrays.asList(
@@ -138,19 +138,17 @@ public class ContentContentScoringServiceTests {
     @DisplayName("Should increment score for multiple dates in statement")
     void shouldIncrementScoreForMultipleDatesInStatement() {
         List<String> statementWithManyDates = Arrays.asList(
-                "Bank Statement",
-                "Statement Period: 01/01/2023 - 31/01/2023",
-                "Transaction Date: 05/01/2023",
-                "Transaction Date: 10/01/2023",
-                "Transaction Date: 15/01/2023",
-                "Transaction Date: 20/01/2023",
-                "Transaction Date: 25/01/2023",
-                "Transaction Date: 30/01/2023"
+                "01/01/2025",
+                "05/01/2025",
+                "10/01/2025",
+                "15/01/2025",
+                "20/01/2025",
+                "25/01/2025",
+                "30/01/2025"
         );
 
-        List<String> statementWithFewDates = Arrays.asList(
-                "Bank Statement",
-                "Statement Period: 01/01/2023 - 31/01/2023"
+        List<String> statementWithFewDates = List.of(
+                "01/01/2025"
         );
 
         double scoreWithManyDates = scoringService.calculateStatementScore(statementWithManyDates);

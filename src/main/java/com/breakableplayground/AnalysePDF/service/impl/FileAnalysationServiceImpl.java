@@ -1,24 +1,22 @@
 package com.breakableplayground.AnalysePDF.service.impl;
 
+import com.breakableplayground.AnalysePDF.dao.ReadPdfDAO;
+import com.breakableplayground.AnalysePDF.domain.DocumentType;
+import com.breakableplayground.AnalysePDF.domain.FontRatio;
 import com.breakableplayground.AnalysePDF.domain.PDFAttributes;
+import com.breakableplayground.AnalysePDF.response.AnalysisResponse;
 import com.breakableplayground.AnalysePDF.service.FileAnalysationService;
-import com.breakableplayground.AnalysePDF.service.FileExtractionService;
 import com.breakableplayground.AnalysePDF.service.ContentScoringService;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class FileAnalysationServiceImpl implements FileAnalysationService {
-    private static final Logger log = LoggerFactory.getLogger(FileAnalysationServiceImpl.class);
-
-    private final FileExtractionService fileExtractionService;
+    private final ReadPdfDAO readPdfDAO;
 
     private final ContentScoringService contentScoringService;
 
@@ -26,32 +24,39 @@ public class FileAnalysationServiceImpl implements FileAnalysationService {
     private static final double PROBABLE_THRESHOLD = 0.6;
 
     @Autowired
-    public FileAnalysationServiceImpl(FileExtractionService fileExtractionService, ContentScoringService contentScoringService) {
-        this.fileExtractionService = fileExtractionService;
+    public FileAnalysationServiceImpl(ReadPdfDAO readPdfDAO, ContentScoringService contentScoringService) {
+        this.readPdfDAO = readPdfDAO;
         this.contentScoringService = contentScoringService;
     }
 
     @Override
-    public String AnalyseUploadedPDF(MultipartFile file) {
-        try (InputStream inputStream = file.getInputStream()) {
-            PDDocument document = PDDocument.load(inputStream);
-            PDFAttributes pdfAttributes = fileExtractionService.extractPDFData(document);
+    public AnalysisResponse AnalyseUploadedPDF(MultipartFile file) throws Exception {
+        PDFAttributes pdfAttributes = readPdfDAO.extractPDFData(file);
+        Map<String, String> fontMap = readPdfDAO.extractCharacterFont(file);
 
-            double invoiceScore = contentScoringService.calculateInvoiceScore(pdfAttributes.content());
-            double statementScore = contentScoringService.calculateStatementScore(pdfAttributes.content());
+        AnalysisResponse response = new AnalysisResponse();
 
-            document.close();
+        pdfAttributes.setFontRatio(calculateFontRatio(fontMap));
 
-            if (invoiceScore > CONFIDENT_THRESHOLD && invoiceScore > statementScore * (1 + PROBABLE_THRESHOLD)) {
-                return "Invoice";
-            } else if (statementScore > CONFIDENT_THRESHOLD && statementScore > invoiceScore * (1 + PROBABLE_THRESHOLD)) {
-                return "Statement";
-            } else {
-                return "Unknown";
-            }
-        } catch (IOException ioe) {
-            log.error("Error");
+        double invoiceScore = contentScoringService.calculateInvoiceScore(pdfAttributes.getContent());
+        double statementScore = contentScoringService.calculateStatementScore(pdfAttributes.getContent());
+
+        response.setFontRatio(pdfAttributes.getFontRatio());
+
+        if (invoiceScore > CONFIDENT_THRESHOLD && invoiceScore > statementScore * (1 + PROBABLE_THRESHOLD)) {
+            response.setDocumentType(DocumentType.INVOICE);
+        } else if (statementScore > CONFIDENT_THRESHOLD && statementScore > invoiceScore * (1 + PROBABLE_THRESHOLD)) {
+            response.setDocumentType(DocumentType.STATEMENT);
         }
-        return "";
+        return response;
+
+    }
+
+    private FontRatio calculateFontRatio(Map<String, String> characterList){
+        Map<String, Integer> fontMap = new HashMap<>();
+        for(String font : characterList.values()){
+            fontMap.merge(font, 1, Integer::sum);
+        }
+        return new FontRatio(fontMap);
     }
 }

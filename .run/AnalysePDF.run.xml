@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AnalysePDF" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.breakableplayground.AnalysePDF.AnalysePdfApplication" />
+    <module name="AnalysePDF" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
